@@ -2,15 +2,24 @@
 
 import {ref} from 'vue'
 import { useRouter } from 'vue-router';
-
-import axios from 'axios'
-
+import axios from '../lib/axios.js';
+import useAuthStore from '../stores/auth.js';
 const router = useRouter()
 
 const form = ref({
   email: null,
   password: null
 })
+
+const onLogin = async () => {
+  try {
+    await axios.get('/sanctum/csrf-cookie')
+  } catch (err) {
+    
+  }
+}
+
+const auth = useAuthStore()
 
 
 axios.defaults.withCredentials = true
