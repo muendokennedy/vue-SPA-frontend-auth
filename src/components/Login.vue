@@ -10,36 +10,26 @@ const form = ref({
   email: null,
   password: null
 })
+const error = ref(null)
+
+const auth = useAuthStore()
 
 const onLogin = async () => {
   try {
     await axios.get('/sanctum/csrf-cookie')
+    await axios.post('/login', form.value)
+    const {data} = await axios.get('/api/user')
+    auth.setUser(data)
   } catch (err) {
-    
+    error.value = err
   }
 }
-
-const auth = useAuthStore()
-
-
-axios.defaults.withCredentials = true
-axios.defaults.withXSRFToken = true;
-const onLogin = async () => {
-  await axios.get('http://localhost:8000/sanctum/csrf-cookie')
-  await axios.post('http://localhost:8000/login', {
-    email: form.value.email,
-    password: form.value.password
-  })
-
-  router.push('/dashboard')
-
-}
-
 
 </script>
 
 <template>
   <div class="container">
+    {{ user }}
     <form @submit.prevent="onLogin">
       <h2>Sign in to your account</h2>
       <div class="input-field">
